@@ -18,6 +18,7 @@ const registerSchema = z.object({
     .string()
     .min(8, "Usa al menos 8 caracteres.")
     .regex(/[A-Z]/, "Incluye una letra mayuscula.")
+    .regex(/[a-z]/, "Incluye una letra minuscula.")
     .regex(/[0-9]/, "Incluye un numero."),
 });
 

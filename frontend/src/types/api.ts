@@ -4,6 +4,10 @@ export type AuthUser = {
   email: string;
 };
 
+export type ProfileResponse = AuthUser & {
+  createdAtUtc: string;
+};
+
 export type AuthResponse = {
   accessToken: string;
   expiresAtUtc: string;
@@ -26,6 +30,7 @@ export type RecentAnalysis = {
   title: string;
   status: "safe" | "warning" | "danger" | "unknown";
   createdAt: string;
+  score: number | null;
   summary: string;
 };
 

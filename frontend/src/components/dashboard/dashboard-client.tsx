@@ -7,12 +7,15 @@ import {
   History,
   Loader2,
   LogOut,
+  MonitorCog,
   ShieldAlert,
   ShieldCheck,
+  UserRound,
 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { apiFetch } from "@/lib/api";
+import { API_URL, apiFetch } from "@/lib/api";
 import { clearSession, getAccessToken, getCurrentUser } from "@/lib/auth";
 import { normalizeDashboard } from "@/lib/dashboard";
 import type { AuthUser, DashboardSummary, RecentAnalysis } from "@/types/api";
@@ -100,14 +103,23 @@ export function DashboardClient() {
               </p>
             </div>
           </div>
-          <button
-            className="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-800 transition hover:bg-slate-50"
-            type="button"
-            onClick={logout}
-          >
-            <LogOut aria-hidden="true" className="size-4" />
-            Salir
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <Link
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-800 transition hover:bg-slate-50"
+              href="/profile"
+            >
+              <UserRound aria-hidden="true" className="size-4" />
+              Perfil
+            </Link>
+            <button
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-800 transition hover:bg-slate-50"
+              type="button"
+              onClick={logout}
+            >
+              <LogOut aria-hidden="true" className="size-4" />
+              Salir
+            </button>
+          </div>
         </div>
       </header>
 
@@ -128,7 +140,7 @@ export function DashboardClient() {
                 <p className="mt-1 text-sm leading-6">{error}</p>
                 <p className="mt-3 text-sm leading-6">
                   Verifica que el backend este activo en{" "}
-                  <code className="rounded bg-red-100 px-1.5 py-0.5">http://localhost:5000</code>
+                  <code className="rounded bg-red-100 px-1.5 py-0.5">{API_URL}</code>
                   {" "}o actualiza <code className="rounded bg-red-100 px-1.5 py-0.5">.env.local</code>.
                 </p>
               </div>
@@ -180,6 +192,20 @@ export function DashboardClient() {
               </div>
             </section>
 
+            <section className="rounded-lg border border-cyan-200 bg-cyan-50 p-5 text-cyan-950 shadow-sm">
+              <div className="flex items-start gap-3">
+                <MonitorCog aria-hidden="true" className="mt-0.5 size-5 shrink-0" />
+                <div>
+                  <h2 className="font-semibold">Version web temprana</h2>
+                  <p className="mt-2 text-sm leading-6">
+                    Esta interfaz web ya puede manejar cuenta, sesion, dashboard e historial.
+                    El navegador no puede inspeccionar por si solo antivirus, firewall o archivos
+                    locales; esas senales llegaran cuando exista el Desktop Agent.
+                  </p>
+                </div>
+              </div>
+            </section>
+
             <section className="rounded-lg border border-slate-200 bg-white shadow-sm">
               <div className="flex items-center gap-3 border-b border-slate-200 px-5 py-4">
                 <History aria-hidden="true" className="size-5 text-[#155eef]" />
@@ -200,11 +226,18 @@ export function DashboardClient() {
                           <p className="mt-2 text-xs text-slate-500">{analysis.createdAt}</p>
                         ) : null}
                       </div>
-                      <span
-                        className={`w-fit rounded-md border px-2.5 py-1 text-xs font-semibold ${statusStyles[analysis.status]}`}
-                      >
-                        {analysis.status}
-                      </span>
+                      <div className="flex items-center gap-2 sm:justify-end">
+                        {analysis.score !== null ? (
+                          <span className="rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700">
+                            {analysis.score}/100
+                          </span>
+                        ) : null}
+                        <span
+                          className={`w-fit rounded-md border px-2.5 py-1 text-xs font-semibold ${statusStyles[analysis.status]}`}
+                        >
+                          {analysis.status}
+                        </span>
+                      </div>
                     </article>
                   ))}
                 </div>
